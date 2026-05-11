@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingredient Checker</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+  <%- include("./partials/head") %>
+
+    <style>
+      body {
+          margin: 0;
+          font-family: "Georgia", serif;
+        }
+      .analyze-container {
+        max-width: 720px;
+        margin: auto;
+      }
+
+      /* Health Profile */
+      .health-profile {
+        margin: 25px 0;
+      }
+
+      .health-box {
+        background: #e1f2eb;
+        border-radius: 10px;
+        padding: 15px 20px;
+      }
+
+      .health-main {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .health-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px 30px;
+      }
+
+      .health-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+      }
+
+      @media (max-width: 480px) {
+        .health-options {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .btn {
+        width: 100%;
+        height: 65px;
+        background: #af8dc3;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 22px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+
+      .btn:hover {
+        background: #9a68b7;
+        color: #ffffff;
+      }
+
+      .health-item input[type="checkbox"] {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #4caf7d;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .health-item input[type="checkbox"]:checked {
+        background-color: #4caf7d;
+      }
+
+      .health-item input[type="checkbox"]:checked::after {
+        content: "✓";
+        color: #ffffff;
+        /* 🤍 WHITE TICK */
+        font-size: 14px;
+        font-weight: bold;
+        position: absolute;
+        left: 1px;
+        top: -3px;
+      }
+
+      .site-footer {
+        background: rgb(245, 245, 240);
+        color: rgb(76, 76, 76);
+        padding: 60px 40px;
+        font-family: 'Inter', sans-serif;
+      }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 50px;
+      }
+
+      .footer-col h4 {
+        font-size: 18px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .footer-col a {
+        display: block;
+        color: #79797c;
+        text-decoration: none;
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+
+      .footer-col a:hover {
+        color: #494949;
+      }
+
+      /* Brand */
+      .brand .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 25px;
+      }
+
+      .footer-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .footer-title.mt {
+        margin-top: 25px;
+      }
+
+      .app-badge {
+        width: 160px;
+        margin-bottom: 10px;
+      }
+
+      /* Social Icons */
+      .social-icons { 
+        display: flex;
+        gap: 16px;
+      }
+
+      .social-icons a {
+        color: rgb(76, 76, 76);
+        font-size: 20px;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .footer-container {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .footer-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+</head>
+
+<body>
+  <%- include("./partials/nav") %>
+
+    <form action="/tools/health" method="POST" class="container analyze-container">
+
+      <!-- Health Profile -->
+      <div class="health-profile">
+        <h1 class="health-title" style="color: #8f6aa6;">Health Profile</h1>
+
+        <div class="health-box">
+          <label class="health-main">
+            <span>Personalize Your Warnings</span>
+          </label>
+          <hr>
+
+          <div class="health-options">
+            <% healthConditions.forEach(condition=> { %>
+              <label class="health-item">
+                <input type="checkbox" name="healthConditions[]" value="<%= condition %>" />
+                <%= condition.replace(/_/g, " " ) %>
+              </label>
+              <% }) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn">Update Profile</button>
+
+    </form>
+
+    <%- include("./partials/footer") %>
+    <%- include("./partials/script") %>
+</body>
+
+</html>

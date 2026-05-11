@@ -1,0 +1,126 @@
+<style>
+  .site-footer {
+        background: rgb(245, 245, 240);
+        color: rgb(76, 76, 76);
+        padding: 60px 40px;
+        font-family: 'Inter', sans-serif;
+        margin-top: 300px;
+      }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 50px;
+      }
+
+      .footer-col h4 {
+        font-size: 18px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .footer-col a {
+        display: block;
+        color: #79797c;
+        text-decoration: none;
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+
+      .footer-col a:hover {
+        color: #494949;
+      }
+
+      /* Brand */
+      .brand .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 26px;
+        font-weight: 700;
+        margin-bottom: 25px;
+      }
+
+      .footer-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+        font-weight: 500;
+      }
+
+      .footer-title.mt {
+        margin-top: 25px;
+      }
+
+      .app-badge {
+        width: 160px;
+        margin-bottom: 10px;
+      }
+
+      /* Social Icons */
+      .social-icons {
+        
+        display: flex;
+        gap: 16px;
+      }
+
+      .social-icons a {
+        color: rgb(76, 76, 76);
+        font-size: 20px;
+      }
+
+      /* Responsive */
+      @media (max-width: 900px) {
+        .footer-container {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 500px) {
+        .footer-container {
+          grid-template-columns: 1fr;
+        }
+      }
+</style>
+<footer class="site-footer">
+  <div class="footer-container">
+
+    <!-- Brand Column -->
+    <div class="footer-col brand">
+      <div class="logo">
+        <span class="logo-text">IngrediSafe</span>
+      </div>
+
+      <p class="footer-title mt">Connect with us</p>
+      <div class="social-icons">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-pinterest"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+
+    <!-- Tools -->
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="/tools/inchecker">Ingredient Checker</a>
+      <a href="/tools/search">Search Ingredient</a>
+    </div>
+
+
+    <!-- Company -->
+    <div class="footer-col">
+      <h4>IngrediSafe</h4>
+      <a href="/tools/about">About</a>
+      <a href="/tools/support">Support</a>
+      <a href="/tools/contact">Contact Us</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Health</h4>
+      <a href="/tools/health">Health Profile</a>
+    </div>
+
+  </div>
+</footer>

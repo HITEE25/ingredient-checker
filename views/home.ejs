@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredient Checker</title>
+    <%- include("./partials/head") %>
+      <style>
+        html {
+          scroll-behavior: smooth;
+        }
+
+        body {
+          overflow-anchor: none;
+        }
+
+        html,
+        body {
+          overflow-x: hidden;
+          /* prevents horizontal scroll */
+        }
+
+        .analyze-container {
+          max-width: 720px;
+          margin: 0 auto 50px auto;
+          /* Add bottom margin */
+          padding: 30px;
+          position: relative;
+          /*  Prevent jump */
+        }
+
+
+        /* Analyze Button */
+        .analyze-btn {
+          width: 100%;
+          height: 65px;
+          background: #af8dc3;
+          color: white;
+          border: none;
+          border-radius: 25px;
+          font-size: 22px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-bottom: 20px;
+        }
+
+        .analyze-btn:hover {
+          background: #9a68b7;
+        }
+
+        /* Upload Button */
+        .upload-btn {
+          width: 100%;
+          height: 65px;
+          background: #f4f4f4;
+          border-radius: 25px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          font-size: 20px;
+          font-weight: 500;
+          color: #444;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+
+        .upload-btn:hover {
+          background: #eaeaea;
+        }
+
+        .upload-icon {
+          font-size: 24px;
+        }
+
+        .hero {
+          /*it remains in documnet flow ,relative to normal position*/
+          position: relative;
+          height: 95vh;
+          width: 100%;
+          background: url(/image/farm.jpg) center/cover no-repeat;
+          display: flex;
+          align-items: center;
+        }
+
+        .hero-overlay {
+          /*relative to ancestor element, remove from normal flow*/
+          position: absolute;
+          /*top: 0 → touches top edge,right: 0 → touches right edge,bottom: 0 → touches bottom edge,left: 0 → touches left edge*/
+          inset: 0;
+          /*0,0,0 black 0.45 => opacitiy*/
+          background-color: rgba(0, 0, 0, 0.45);
+        }
+
+        .hero-content {
+          position: relative;
+          color: white;
+          /*Limits how wide the content can grow.
+          Prevents long text lines, improving readability.
+          On large screens, text stays nicely contained instead of stretching.*/
+          max-width: 650px;
+          padding-left: 15px;
+          /*text apper above overlay*/
+          z-index: 2;
+        }
+
+        .tagline {
+          letter-spacing: 2px;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+
+        .subtitle {
+          font-size: 18px;
+          line-height: 1.6;
+          margin-bottom: 30px;
+        }
+
+        .hero-content h1 {
+          font-size: 56px;
+          font-weight: 700;
+          margin-bottom: 20px;
+        }
+
+        .card {
+          background-color: rgba(240, 240, 239, 0.896);
+        }
+
+        .waffer-image {
+          position: relative;
+          width: 50%;
+          height: auto;
+          overflow: visible;
+        }
+
+        .waffer-img {
+          width: 50%;
+        }
+
+        body {
+          margin: 0;
+          font-family: "Georgia", serif;
+        }
+
+        .stat-number {
+          font-family: "Georgia", serif;
+          font-size: 90px;
+          font-weight: 700;
+          color: #1f2326;
+          line-height: 1;
+        }
+
+
+        .stat-percent {
+          font-size: 40px;
+          position: relative;
+          top: -40px;
+          /* lifts % like your image */
+          margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+          .stat-number {
+            font-size: 50px;
+          }
+
+          .stat-percent {
+            font-size: 20px;
+            top: -20px;
+          }
+
+          .waffer-image {
+            width: 100%;
+          }
+        }
+
+        .stat-text {
+          font-family: "Georgia", serif;
+          font-size: 22px;
+          line-height: 1.6;
+          color: #2a2a2a;
+          max-width: 320px;
+          margin: auto;
+        }
+
+        .analysis-container {
+          max-width: 720px;
+          margin: 50px auto;
+          padding: 30px;
+        }
+
+        .analysis-title {
+
+          font-size: 30px;
+          font-weight: 700;
+          margin-bottom: 10px;
+
+        }
+
+        .product-name {
+          color: #444;
+          margin-bottom: 25px;
+        }
+
+        .section-heading {
+          margin-top: 25px;
+          font-weight: 600;
+        }
+
+
+        .highlight-tags {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin-bottom: 20px;
+        }
+
+        .tag {
+          padding: 8px 15px;
+          border-radius: 20px;
+          font-size: 14px;
+        }
+
+        .tag.danger {
+          background: #ffd6d6;
+          color: #842029;
+        }
+
+        .tag.safe {
+          background: #d6ffe3;
+          color: #14532d;
+        }
+
+
+        .analysis-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+
+        .analysis-table th {
+          background: #eee;
+          padding: 10px;
+          text-align: left;
+        }
+
+        .analysis-table td {
+          padding: 10px;
+          border-bottom: 1px solid #ddd;
+        }
+
+
+        .risk {
+          color: #b91c1c;
+        }
+
+        .safe-text {
+          color: #166534;
+        }
+
+        .ingredients-paragraph {
+          background: #f8f8f8;
+          padding: 15px;
+          border-radius: 8px;
+          line-height: 1.7;
+          color: #333;
+          font-size: 16px;
+          margin-bottom: 20px;
+        }
+
+        /* Smooth scroll behavior */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Anchor/form focus fix */
+        form:focus-within,
+        form:target {
+          scroll-margin-top: 100px;
+          /* Space from top */
+        }
+
+
+        /* Results container stays in place */
+        .results-container {
+          position: relative;
+          padding-top: 20px;
+        }
+
+        /* Loading state prevents jump */
+        .loading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .hero-summary {
+          padding: 30px;
+          border-radius: 20px;
+          margin-bottom: 30px;
+          text-align: center;
+        }
+
+        .product-title {
+          font-size: 28px;
+          margin: 0 0 15px 0;
+        }
+
+        .safety-score {
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        .score {
+          padding: 10px 20px;
+          border-radius: 25px;
+          font-weight: 600;
+          font-size: 18px;
+        }
+
+        .score.good {
+          background: rgba(34, 197, 94, 0.2);
+          color: #22c55e;
+        }
+
+        .score.bad {
+          background: rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+        }
+
+        .recommendation {
+          padding: 10px 25px;
+          border-radius: 25px;
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        .recommendation.okay {
+          color: #22c55e;
+        }
+
+        .recommendation.avoid {
+          background: rgba(239, 68, 68, 0.3);
+          color: #dc2626;
+        }
+
+        .ingredients-section {
+          margin-top: 20px;
+        }
+
+        .ingredients-section h3 {
+          margin: 0 0 10px 0;
+          opacity: 0.9;
+        }
+
+        .ingredients-list {
+          padding: 15px;
+          border-radius: 12px;
+          font-size: 16px;
+        }
+
+        /* Nutrition Facts */
+        .nutrition-facts {
+          background: white;
+          padding: 30px;
+        }
+
+        .nutrition-header {
+          text-align: center;
+          margin-bottom: 25px;
+        }
+
+        .nutrition-header h2 {
+          color: #333;
+          font-size: 24px;
+          margin: 0 0 5px 0;
+        }
+
+        .nutrition-header p {
+          color: #666;
+          margin: 0;
+          font-size: 14px;
+        }
+
+        .nutrition-table {
+          width: 100%;
+          border-collapse: collapse;
+          font-family: 'Georgia', serif;
+          background: #fff;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nutrition-table th {
+          background: #f8f9fa;
+          padding: 12px 8px;
+          text-align: left;
+          font-weight: 600;
+          color: #333;
+          border-bottom: 3px solid #e9ecef;
+        }
+
+        .nutrition-table td {
+          padding: 10px 8px;
+          border-bottom: 1px solid #e9ecef;
+        }
+
+        .nutrition-table strong {
+          color: #333;
+        }
+
+        .thick-row td {
+          border-bottom: 3px solid #dee2e6 !important;
+          font-size: 12px;
+          color: #666;
+        }
+
+        .nutrition-fallback {
+          background: #f8f9fa;
+          padding: 20px;
+          border-radius: 12px;
+          text-align: center;
+          color: #666;
+        }
+
+        /* Safety Analysis */
+        .safety-breakdown {
+          margin: 30px 0;
+        }
+
+        .safety-breakdown h3 {
+          color: #333;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .harmful-section,
+        .safe-section {
+          margin-bottom: 25px;
+        }
+
+        .harmful-section h4 {
+          color: #dc2626;
+          margin-bottom: 15px;
+        }
+
+        .safe-section h4 {
+          color: #22c55e;
+          margin-bottom: 15px;
+        }
+
+        .ingredients-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 15px;
+        }
+
+        .ingredient-card {
+          padding: 15px;
+          border-radius: 12px;
+          border-left: 5px solid;
+        }
+
+        .ingredient-card.harmful {
+          background: #fef2f2;
+          border-left-color: #dc2626;
+        }
+
+        .ingredient-card.safe {
+          background: #f0fdf4;
+          border-left-color: #22c55e;
+        }
+
+        .ingredient-card strong {
+          display: block;
+          margin-bottom: 5px;
+          color: #333;
+        }
+
+        .neutral-section {
+          text-align: center;
+          padding: 20px;
+          color: #666;
+        }
+
+        /* Recommendations */
+        .recommendations {
+          padding: 25px;
+          border-radius: 20px;
+          text-align: center;
+        }
+
+        .recommendations h3 {
+          color: black;
+          margin-bottom: 15px;
+        }
+
+        .rec-text {
+          font-size: 18px;
+          margin: 0;
+          color: black;
+          line-height: 1.6;
+        }
+
+        #imageUpload {
+          position: absolute;
+          left: -9999px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+          .analysis-container {
+            padding: 15px;
+          }
+
+          .hero-summary {
+            padding: 20px;
+          }
+
+          .ingredients-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .nutrition-table {
+            font-size: 14px;
+          }
+
+          #analysisResult {
+            scroll-margin-top: 100px;
+          }
+        }
+      </style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+
+  <body>
+    <%- include("./partials/nav") %>
+      <section class="hero">
+        <!-- to print transparent black background-->
+        <div class="hero-overlay"></div>
+
+        <!-- Hero content-->
+        <div class="hero-content">
+          <p class="tagline">BACKED BY SCIENCE</p>
+
+          <h1>
+            what's Really in <br />
+            Your food?
+          </h1>
+
+          <p class="subtitle">
+            Every bite you take is connected to something bigger. Analyze
+            ingredients and make informed food choices.
+          </p>
+
+        </div>
+      </section>
+
+      <section class="py-5 bg-white">
+        <div class="container">
+          <div class="row g-5">
+
+            <!-- Card 1 -->
+            <div class="col-lg-4">
+              <div class="card h-100 shadow-sm rounded-4 border-light" style="min-height: 350px;">
+                <div class="card-body d-flex flex-column justify-content-center">
+                  <h5 class="card-title fw-bold  text-dark text-uppercase mb-3 px-5">
+                    Health Impact
+                  </h5>
+                  <p class="card-text text-muted px-5">
+                    Calories, sugar, fats, and essential nutrients influence daily
+                    health. This score helps users understand how balanced a food
+                    product is for regular consumption.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="col-lg-4">
+              <div class="card h-100 shadow-sm rounded-4 border-light">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                  <h5 class="card-title fw-bold text-dark text-uppercase mb-3 px-5">
+                    Ingredient Transparency
+                  </h5>
+                  <p class="card-text text-muted px-5">
+                    Labels don’t always tell the full story. We highlight artificial
+                    additives, preservatives, and risky ingredients to support
+                    informed food choices.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="col-lg-4">
+              <div class="card h-100 shadow-sm rounded-4 border-light">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                  <h5 class="card-title fw-bold text-dark text-uppercase mb-3 px-5">
+                    Processing Level
+                  </h5>
+                  <p class="card-text text-muted px-5">
+                    This metric evaluates how far a product is from natural, whole
+                    foods. Higher processing often means more additives and lower
+                    nutritional value.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+
+      <form action="/tools/home" method="post" enctype="multipart/form-data" class="container analyze-container"
+        style="margin-top: 80px;">
+        <h1 class="mt-4"><span style="color:#8f6aa6">Ingredient</span> Checker</h1>
+        <h6 class="mb-4">
+          Analyze any product for a science-backed breakdown of its ingredients
+        </h6>
+
+        <!-- Hidden File Input -->
+        <input type="file" id="imageUpload" name="image" accept="image/*" required />
+
+        <!-- Upload Button -->
+        <label for="imageUpload" class="upload-btn">
+          <span class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></span>
+          <span>Upload a photo</span>
+        </label>
+
+        <p id="fileName" style="text-align:center;color:#555;"></p>
+
+        <!-- Analyze Button -->
+        <button type="submit" id="analyzeBtn" class="analyze-btn mt-2">
+          Analyze Now
+        </button>
+      </form>
+
+      <% if (typeof error !=="undefined" && error) { %>
+        <div style="max-width:720px;margin:20px auto;
+              background:#f8d7da;color:#842029;
+              padding:15px;border-radius:8px;">
+          <%= error %>
+        </div>
+        <% } %>
+
+          <% if (typeof analysis !=="undefined" && analysis) { %>
+            <div class="analysis-container" id="analysisResult">
+
+              <!-- Hero Summary -->
+              <div class="hero-summary">
+                <div class="product-header">
+                  <h1 class="product-title">
+                    <%= analysis.productName || 'Product Analysis' %>
+                  </h1>
+                  <div class="safety-score">
+                    <span
+                      class="score <% if((analysis.totalHarmful || 0) > (analysis.totalSafe || 0)) { %>bad<% } else { %>good<% } %>">
+                      <%= (analysis.totalHarmful || 0) %> Harmful / <%= (analysis.totalSafe || 0) %> Safe
+                    </span>
+                    <span
+                      class="recommendation <% if((analysis.totalHarmful || 0) > 2) { %>avoid<% } else { %>okay<% } %>">
+                      <%= (analysis.totalHarmful || 0)> 2 ? ' AVOID' : 'OKAY' %>
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Ingredients List -->
+                <div class="ingredients-section">
+                  <h3>All Ingredients</h3>
+                  <div class="ingredients-list">
+                    <%= analysis.ingredients || 'No ingredients detected' %>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nutrition Facts Label -->
+              <section class="nutrition-facts">
+                <header class="nutrition-header">
+                  <h2>Nutrition Facts</h2>
+                  <p>Per 100g serving (estimated from ingredients)</p>
+                </header>
+
+                <!-- Nutrition Table -->
+                <% if(analysis.nutrition && !analysis.nutrition.error) { %>
+                  <table class="nutrition-table">
+                    <tr>
+                      <th colspan="3">Amount Per Serving</th>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><strong>Calories</strong></td>
+                      <td><strong>
+                          <%= Math.round(analysis.nutrition.calories || 0) %> kcal
+                        </strong></td>
+                    </tr>
+                    <tr class="thick-row">
+                      <td colspan="3"><strong>% Daily Value*</strong></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><strong>Total Fat</strong>
+                        <%= Math.round((analysis.nutrition.fat || 0)*10)/10 %>g
+                      </td>
+                      <td><strong>
+                          <%= Math.round((analysis.nutrition.fat || 0)/0.78*100) %>%
+                        </strong></td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>Saturated Fat —g</td>
+                      <td>—%</td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><strong>Sodium</strong>
+                        <%= Math.round((analysis.nutrition.sodium || 0)/1000) %>mg
+                      </td>
+                      <td><strong>
+                          <%= Math.round((analysis.nutrition.sodium || 0)/2400*100) %>%
+                        </strong></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><strong>Total Carbohydrate</strong> —g</td>
+                      <td>—%</td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>Total Sugars <%= Math.round((analysis.nutrition.sugar || 0)*10)/10 %>g</td>
+                      <td><strong>
+                          <%= Math.round((analysis.nutrition.sugar || 0)/50*100) %>%
+                        </strong></td>
+                    </tr>
+                    <tr>
+                      <td colspan="2"><strong>Protein</strong> —g</td>
+                      <td>—%</td>
+                    </tr>
+                  </table>
+                  <% } else { %>
+                    <div class="nutrition-fallback">
+                      <p>Nutrition data unavailable - Safety analysis only</p>
+                    </div>
+                    <% } %>
+
+                      <!-- Safety Analysis -->
+                      <div class="safety-breakdown">
+                        <h3>Ingredient Safety Analysis</h3>
+
+                        <!-- Harmful -->
+                        <% if(analysis.harmful && analysis.harmful.length> 0) { %>
+                          <div class="harmful-section">
+                            <h4>
+                              <%= analysis.harmful.length %> Harmful Ingredients
+                            </h4>
+                            <div class="ingredients-grid harmful">
+                              <% analysis.harmful.forEach(item=> { %>
+                                <div class="ingredient-card harmful">
+                                  <strong>
+                                    <%= item.name %>
+                                  </strong>
+                                  <p>
+                                    <%= item.risk %>
+                                  </p>
+                                </div>
+                                <% }) %>
+                            </div>
+                          </div>
+                          <% } %>
+
+                            <!-- Safe -->
+                            <% if(analysis.safe && analysis.safe.length> 0) { %>
+                              <div class="safe-section">
+                                <h4>
+                                  <%= analysis.safe.length %> Safe Ingredients
+                                </h4>
+                                <div class="ingredients-grid safe">
+                                  <% analysis.safe.forEach(item=> { %>
+                                    <div class="ingredient-card safe">
+                                      <strong>
+                                        <%= item.pattern %>
+                                      </strong>
+                                      <p>
+                                        <%= item.reason %>
+                                      </p>
+                                    </div>
+                                    <% }) %>
+                                </div>
+                              </div>
+                              <% } %>
+
+                                <% if(!analysis.harmful?.length && !analysis.safe?.length) { %>
+                                  <div class="neutral-section">
+                                    <p>No specific harmful/safe ingredients detected</p>
+                                  </div>
+                                  <% } %>
+                      </div>
+
+                      <!-- Recommendation -->
+                      <div class="recommendations">
+                        <h3>Our Recommendation</h3>
+                        <p class="rec-text">
+                          <% const harmful=analysis.totalHarmful || 0; const safe=analysis.totalSafe || 0; const
+                            itemsAnalyzed=analysis.nutrition?.itemsAnalyzed || 0; const
+                            hasEmptyAnalysis=itemsAnalyzed===0 && harmful===0 && safe===0; %>
+
+                            <% if (hasEmptyAnalysis) { %>
+                              <strong>NO ANALYSIS</strong> - No ingredients provided
+                              <% } else if (harmful> safe || harmful > 3) { %>
+                                <strong>AVOID</strong> - Many harmful ingredients
+                                <% } else if (harmful===0) { %>
+                                  <strong>EXCELLENT</strong> - All ingredients safe!
+                                  <% } else { %>
+                                    <strong>USE CAUTION</strong> - <%= harmful %> harmful ingredients found
+                                      <% } %>
+
+                        </p>
+                      </div>
+              </section>
+            </div>
+            <% } %>
+
+
+              <!--ULTRA PROCESSED FOOD, Page , 4 PAGE-->
+              <section class="py-5" style="background:#fffaf3; margin-top: 300px;">
+                <div class="container">
+                  <div class="row align-items-center">
+
+
+                    <!-- Right Image -->
+                    <div class="col-lg-6 d-flex justify-content-center waffer-image">
+                      <img src="/image/wafer.png" alt="Ultra processed food" class="img-fluid waffer-img" />
+                    </div>
+
+                    <!-- Left Text -->
+                    <div class="col-lg-6 row d-flex justify-content-end mt-5 mt-lg-0">
+                      <h1 class="fw-bold lh-1">
+                        <span class="text-success display-4">ULTRA</span><br>
+                        <span class="text-dark display-4">PROCESSED</span><br>
+                        <span class="text-dark display-4">FOOD</span>
+                      </h1>
+
+
+
+                      <p class="fs-5 text-dark" style="max-width:420px;">
+                        Foods containing ingredients produced through industrial processes
+                        and combined with additives to make them hyper-palatable.
+                      </p>
+                    </div>
+
+                    <div class="container py-5">
+                      <div class="row text-center">
+
+                        <!-- STAT 1 -->
+                        <div class="col-md-4 mb-5">
+                          <div class="stat-number fs-sm-6">32</div>
+                          <p class="stat-text mt-4">
+                            different health concerns have been tied to ultra-processed food.
+                          </p>
+                        </div>
+
+                        <!-- STAT 2 -->
+                        <div class="col-md-4 mb-5">
+                          <div class="stat-number fs-sm-6">
+                            52<span class="stat-percent">%</span>
+                          </div>
+                          <p class="stat-text mt-4">
+                            cheaper than less processed alternatives, so they’re widely available even if not as
+                            healthy.
+                          </p>
+                        </div>
+
+                        <div class="col-md-4 mb-5">
+                          <div class="stat-number">
+                            67<span class="stat-percent">%</span>
+                          </div>
+                          <p class="stat-text mt-4">
+                            of foods eaten by children are ultra-processed.
+                          </p>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </section>
+
+              <script>
+                const input = document.getElementById("imageUpload");
+                const nameBox = document.getElementById("fileName");
+                const form = document.querySelector("form");
+                const btn = document.getElementById("analyzeBtn");
+                const isLoggedIn = "<%= !!user %>" === "true";
+                form.addEventListener("submit", function (e) {
+
+                  // Prevent submit if no image selected
+                  if (input.files.length === 0) {
+                    e.preventDefault();
+                    return;
+                  }
+
+                  // Not logged in
+                  if (!isLoggedIn) {
+                    e.preventDefault();
+
+                    btn.innerText = "Please login first";
+                    btn.disabled = true;
+
+                    setTimeout(() => {
+                      btn.innerText = "Analyze Now";
+                      btn.disabled = false;
+                    }, 2000);
+
+                    return;
+                  }
+
+                  // Logged in
+                  btn.innerText = "Analyzing...";
+                  btn.disabled = true;
+                });
+              </script>
+
+              <script>
+                window.addEventListener("load", () => {
+                  const result = document.getElementById("analysisResult");
+
+                  if (result) {
+                    result.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start"
+                    });
+                  }
+                });
+
+                input.addEventListener("change", () => {
+
+                  const currentScroll = window.scrollY;
+
+                  if (input.files.length > 0) {
+                    nameBox.innerText = "Selected: " + input.files[0].name;
+                  }
+
+                  // remove focus from file input
+                  document.activeElement.blur();
+
+                  requestAnimationFrame(() => {
+                    window.scrollTo({
+                      top: currentScroll,
+                      behavior: "instant"
+                    });
+                  });
+
+                });
+              </script>
+
+              <%- include("./partials/script") %>
+                <%- include("./partials/footer") %>
+  </body>
+
+</html>

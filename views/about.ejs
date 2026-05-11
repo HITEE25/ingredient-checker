@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredient Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+    <%- include("./partials/head") %>
+
+      <style> 
+        .app-badge {
+          width: 160px;
+          margin-bottom: 10px;
+        }
+
+        /* Social Icons */
+        .social-icons {
+          display: flex;
+          gap: 16px;
+        }
+
+        .social-icons a {
+          color: rgb(76, 76, 76);
+          font-size: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+          .footer-container {
+            grid-template-columns: 1fr 1fr;
+          }
+        }
+
+        @media (max-width: 500px) {
+          .footer-container {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        body {
+          font-family: "Georgia", serif;
+        }
+
+        .image-collage {
+          display: flex;
+          gap: 20px;
+          max-width: 1100px;
+          margin-bottom: -100px;
+          /* controls total height */
+          height: 380px;
+        }
+
+        /* IMAGES */
+        .image-collage img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 18px;
+        }
+
+
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+          .image-collage {
+            flex-direction: column;
+            height: auto;
+            margin-bottom: 10px;
+          }
+        }
+
+        .image-collage img {
+          height: 220px;
+        }
+      </style>
+  </head>
+
+  <body>
+    <%- include("./partials/nav") %>
+
+
+      <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 text-center">
+
+            <h2 class="mb-4 fw-bold">About Us</h2>
+
+            
+
+            <div class="image-collage">
+              <img src="/image/waffle.png" alt="Waffle">
+              <img src="/image/chco.png" alt="chco">
+            </div>
+
+            <p class="fs-6 mb-4">
+              We are committed to raising awareness about the growing impact of
+              <strong>ultra-processed foods</strong> on modern lifestyles. In today’s
+              fast-paced world, convenience often replaces nutrition, leading to serious
+              health and well-being challenges across all age groups.
+            </p>
+
+            <p class="fs-6 mb-4">
+              Research shows that <strong>over 32 different health concerns</strong> have been
+              linked to the regular consumption of ultra-processed foods. Despite these risks,
+              such foods remain popular because they are <strong>around 52% cheaper</strong> than
+              less processed alternatives, making them widely accessible even when they are not
+              the healthiest option.
+            </p>
+
+            <p class="fs-6">
+              The concern becomes more serious for children, as nearly
+              <strong>67% of the foods consumed by children</strong> today are ultra-processed.
+              Our mission is to educate, inform, and empower people to make healthier food choices
+              and build a more nutritious future.
+            </p>
+
+          </div>
+        </div>
+      </div>
+
+      <%- include("./partials/footer") %>
+      <%- include("./partials/script") %>
+  </body>
+
+</html>
