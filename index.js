@@ -57,7 +57,8 @@ app.get('/',(req,res) => {
     res.render('home');
 })
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log("server started on port number : 8000");
-})
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server started on port ${PORT}`);
+});
