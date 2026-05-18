@@ -14,7 +14,7 @@ const path = require("path");
 //help them to identify app
 //prevents bot users
 const USER_AGENT = "MyFoodApp/1.0 (hitee0025@gmail.com)";
-const CALORIE_NINJAS_KEY = "oXGgz8K7Ir0gV0YFLH52BQ==PvvIkhYoguk5uJS5";
+const CALORIE_NINJAS_KEY = process.env.CALORIE_NINJAS_KEY;
 
 //create a disk storage 
 const storage = multer.diskStorage({
