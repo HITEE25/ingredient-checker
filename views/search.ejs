@@ -619,7 +619,7 @@
                         <% if (hasEmptyAnalysis) { %>
                           <strong>NO ANALYSIS</strong> - No ingredients provided
                           <% } else if (harmful> safe || harmful > 3) { %>
-                            <strong>AVOID</strong> - Many harmful ingredients
+                            <strong>AVOID</strong> - <%= (analysis.totalHarmful || 0) %> harmful ingredients
                             <% } else if (harmful===0) { %>
                               <strong>EXCELLENT</strong> - All ingredients safe!
                               <% } else { %>
