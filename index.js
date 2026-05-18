@@ -24,7 +24,7 @@ const toolsRoute = require("./routes/tools");
 mongoose.set("strictQuery", false);
 
 mongoose
-   .connect("mongodb://127.0.0.1:27017/checker")
+   .connect(process.env.MONGO_URI)
    .then((e) => {console.log("mogoDB connected")});
 
 //view engine setup for usinf=g ejs
@@ -56,7 +56,7 @@ app.get('/',(req,res) => {
     res.render('home');
 })
 
-
-app.listen(8000, () => {
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
     console.log("server started on port number : 8000");
 })
