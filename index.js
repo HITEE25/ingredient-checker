@@ -4,6 +4,7 @@
 //Handle routes (/, /login, /user)
 //Use middleware
 //Send responses easily
+require('dotenv').config();
 const express = require('express');
 //to use database
 const mongoose = require("mongoose");
