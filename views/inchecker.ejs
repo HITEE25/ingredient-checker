@@ -590,40 +590,7 @@
                                   <% } %>
                       </div>
 
-                      <!-- ULTRA-SAFE PERSONALIZED SECTION -->
-                      <% var showPersonalized=false; var healthConditions=[]; if (typeof analysis !=='undefined' &&
-                        analysis) { if (analysis.healthConditions && analysis.healthConditions.length> 0) {
-                        showPersonalized = true;
-                        healthConditions = analysis.healthConditions;
-                        }
-                        }
-                        %>
-                        <% if (showPersonalized) { %>
-                          <div
-                            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; margin: 25px auto; max-width: 720px; text-align: center; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
-                            <h3 style="margin: 0 0 10px 0; font-size: 24px;">
-                              <i class="fas fa-heartbeat" style="margin-right: 10px;"></i>
-                              Personalized for You
-                            </h3>
-                            <p style="font-size: 16px; margin: 0 0 15px 0;">
-                              <strong>Health Profile:</strong>
-                              <%= healthConditions.join(', ') %>
-  </p>
-  <% if ((analysis.totalHarmful || 0) > 0) { %>
-    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
-      <p style="margin: 0; font-size: 14px;">
-        ⚠️ <strong><%= analysis.totalHarmful %> warnings</strong> for your conditions
-      </p>
-    </div>
-  <% } else { %>
-    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 10px;">
-      <p style="margin: 0; font-size: 14px;">
-        ✅ All ingredients safe for your profile
-      </p>
-    </div>
-  <% } %>
-</div>
-<% } %>
+                     
 
 
                       <!-- Recommendation -->
@@ -637,7 +604,7 @@
                             <% if (hasEmptyAnalysis) { %>
                               <strong>NO ANALYSIS</strong> - No ingredients provided
                               <% } else if (harmful> safe || harmful > 3) { %>
-                                <strong>AVOID</strong> - Many harmful ingredients
+                                <strong>AVOID</strong> - <%= (analysis.totalHarmful || 0) %> harmful ingredients
                                 <% } else if (harmful===0) { %>
                                   <strong>EXCELLENT</strong> - All ingredients safe!
                                   <% } else { %>
