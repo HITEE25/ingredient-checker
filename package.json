@@ -35,4 +35,7 @@
     "baseline-browser-mapping": "^2.10.0",
     "nodemon": "^3.1.11"
   }
+  "engines": {
+  "node": "20.x"
+}
 }
