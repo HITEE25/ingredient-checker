@@ -7,9 +7,9 @@ const axios = require("axios");
 //ocr image => convert image => plain text
 const Tesseract = require("tesseract.js");
 //Prevents disk from filling up, we are using fs
-const fs = require("fs");
+// fs = require("fs");
 const healthProfile = require("../models/tools");
-const path = require("path");
+//const path = require("path");
 //requires custom user agent
 //help them to identify app
 //prevents bot users
@@ -17,40 +17,39 @@ const USER_AGENT = "MyFoodApp/1.0 (hitee0025@gmail.com)";
 const CALORIE_NINJAS_KEY = process.env.CALORIE_NINJAS_KEY;
 
 //create a disk storage 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        //reslove the path of folder
-        cb(null, "./public/uploads");
-    },
-    filename: function (req, file, cb) {
-        //create name of file
-        const filename = `${Date.now()}-${file.originalname}`;
-        cb(null, filename);
-    }
-})
 
-//Multer upload middleware
+const cloudinary = require("../config/cloudinary");
+
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "ingredient-checker",
+        allowed_formats: ["jpg", "png", "jpeg", "webp"]
+    }
+});
+
 const upload = multer({
     storage,
-    limits: {//to give size limits
-        fileSize: 10 * 1024 * 1024,//10mb
-    },//to check if image is uploaded 
+    limits: {
+        fileSize: 10 * 1024 * 1024
+    },
     fileFilter: function (req, file, cb) {
         if (file.mimetype.startsWith("image/")) {
             cb(null, true);
-        }
-        else {
-            cb(new Error("only image files are allowed"));
+        } else {
+            cb(new Error("Only image files are allowed"));
         }
     }
 });
 
-//__dirname store absolute path 
+/*//__dirname store absolute path 
 const uploadDir = path.join(__dirname, '../public/uploads');
 //check if folder exist , dont exist create it 
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });//recursive: true create parent folder if not exist
-}
+}*/
 
 router.get("/", (req, res) => {
     res.render("home", {
@@ -236,7 +235,7 @@ async function uploadPhotoAndAnalyzeProduct(req, res, page) {
             tool = await healthProfile.findOneAndUpdate(
                 { user: req.user._id },  // Find existing
                 {
-                    productImage: `/public/uploads/${req.file.filename}`,
+                    productImage: req.file.path,
                     ingredients: ingredenttext,
                     analysis,
                 },
@@ -254,9 +253,9 @@ async function uploadPhotoAndAnalyzeProduct(req, res, page) {
 
 
         //passing analatic to frontend
-        fs.unlink(imagePath, (err) => {
+        /*fs.unlink(imagePath, (err) => {
             if (err) console.log("File delete error", err);
-        });
+        });*/
 
         return res.render(page, {
             tool,
@@ -268,11 +267,11 @@ async function uploadPhotoAndAnalyzeProduct(req, res, page) {
     }
     catch (error) {
         // Only delete if file exists
-        if (imagePath && fs.existsSync(imagePath)) {
+        /*if (imagePath && fs.existsSync(imagePath)) {
             fs.unlink(imagePath, (err) => {
                 if (err) console.error("File delete error:", err);
             });
-        }
+        }*/
 
         return res.render(page, {
             analysis: null,
